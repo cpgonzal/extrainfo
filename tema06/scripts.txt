@@ -1,4 +1,6 @@
-﻿#Obtener los platos con precio entre 4 y 5 y ordenarlos por las calorías:
+﻿#
+#Obtener los platos con precio entre 4 y 5 y ordenarlos por las calorías:
+#
 
 let $menu := doc("menu.xml")
 for $plato in $menu//plato
