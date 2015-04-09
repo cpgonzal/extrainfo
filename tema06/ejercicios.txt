@@ -1,0 +1,11 @@
+Obtener para SIIU_TXML_AVANCE_MASTER_2013.xml:
+
+Número total de registros
+
+Número de alumnos por titulacion
+
+Alumnos de sexo H que estudian en campus 01501
+
+Número de alumnos de titulación 4311895 nacidos antes de 1990
+
+Número de tipos distintos de documento de identidad

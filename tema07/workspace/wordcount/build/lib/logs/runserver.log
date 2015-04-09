@@ -1,0 +1,34 @@
+[07/Oct/2014 09:59:53 ] settings     INFO     Welcome to Hue 3.6.0
+[07/Oct/2014 09:59:57 -0700] settings     INFO     Welcome to Hue 3.6.0
+[07/Oct/2014 10:00:17 -0700] middleware   INFO     Unloading AuditLoggingMiddleware
+[07/Oct/2014 10:00:17 -0700] middleware   INFO     Unloading SpnegoMiddleware
+[07/Oct/2014 10:00:17 -0700] middleware   INFO     Unloading HueRemoteUserMiddleware
+[07/Oct/2014 10:00:18 -0700] __init__     WARNING  Couldn't import snappy. Support for snappy compression disabled.
+[07/Oct/2014 10:00:31 -0700] backend      INFO     Augmenting users with class: <class 'desktop.auth.backend.DefaultUserAugmentor'>
+[07/Oct/2014 10:00:31 -0700] access       WARNING  127.0.0.1 bigdata - "POST /accounts/login/ HTTP/1.1" -- "bigdata" login ok
+[07/Oct/2014 10:00:31 -0700] access       INFO     127.0.0.1 bigdata - "GET / HTTP/1.1"
+[07/Oct/2014 10:00:34 -0700] access       INFO     127.0.0.1 bigdata - "GET /desktop/debug/check_config HTTP/1.1"
+[07/Oct/2014 10:00:35 -0700] connectionpool INFO     Starting new HTTP connection (1): localhost
+[07/Oct/2014 10:00:35 -0700] access       INFO     127.0.0.1 bigdata - "GET /jobbrowser/ HTTP/1.1"
+[07/Oct/2014 10:00:35 -0700] connectionpool INFO     Starting new HTTP connection (1): localhost
+[07/Oct/2014 10:00:41 -0700] connectionpool INFO     Starting new HTTP connection (1): localhost
+[07/Oct/2014 10:00:41 -0700] connectionpool INFO     Starting new HTTP connection (1): localhost
+[07/Oct/2014 10:00:41 -0700] hive_server2_lib INFO     use_sasl=True, mechanism=PLAIN, kerberos_principal_short_name=None, impersonation_enabled=False
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift exception; retrying: Could not connect to localhost:10000
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift exception; retrying: Could not connect to localhost:10000
+[07/Oct/2014 10:00:41 -0700] thrift_util  WARNING  Out of retries for thrift call: OpenSession
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift saw a transport exception: Could not connect to localhost:10000
+[07/Oct/2014 10:00:41 -0700] hive_server2_lib INFO     use_sasl=False, mechanism=GSSAPI, kerberos_principal_short_name=impala, impersonation_enabled=False
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift exception; retrying: Could not connect to localhost:21050
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift exception; retrying: Could not connect to localhost:21050
+[07/Oct/2014 10:00:41 -0700] thrift_util  WARNING  Out of retries for thrift call: OpenSession
+[07/Oct/2014 10:00:41 -0700] thrift_util  INFO     Thrift saw a transport exception: Could not connect to localhost:21050
+[07/Oct/2014 10:00:41 -0700] connectionpool INFO     Starting new HTTP connection (2): localhost
+[07/Oct/2014 10:00:41 -0700] connectionpool INFO     Starting new HTTP connection (3): localhost
+[07/Oct/2014 10:00:41 -0700] connectionpool INFO     Starting new HTTP connection (1): localhost
+[07/Oct/2014 10:01:06 -0700] access       INFO     127.0.0.1 bigdata - "GET /jobbrowser/ HTTP/1.1"
+[07/Oct/2014 10:01:08 -0700] access       WARNING  127.0.0.1 bigdata - "GET /logs HTTP/1.1"
+[07/Oct/2014 10:01:10 -0700] access       INFO     127.0.0.1 bigdata - "GET /jobbrowser/ HTTP/1.1"
+[07/Oct/2014 10:01:27 -0700] access       INFO     127.0.0.1 bigdata - "GET /home HTTP/1.1"
+[07/Oct/2014 10:01:29 -0700] access       INFO     127.0.0.1 bigdata - "GET /desktop/api/users/autocomplete HTTP/1.1"
+[07/Oct/2014 10:01:29 -0700] access       INFO     127.0.0.1 bigdata - "GET /jobbrowser/ HTTP/1.1"
