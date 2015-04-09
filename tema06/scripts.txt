@@ -1,4 +1,4 @@
-﻿#Obtener los platos con precio entre 4 y 5€ y ordenarlos por las calorías:
+﻿#Obtener los platos con precio entre 4 y 5 y ordenarlos por las calorías:
 
 let $menu := doc("menu.xml")
 for $plato in $menu//plato
@@ -25,6 +25,10 @@ if($plato/calorias<300) then
 else <plato calorias="alta">{$plato/nombre}</plato>
 
 
+#Obtener los platos bajos en calorías
+for $plato in doc("menu.xml")//plato
+let $bajocal:= if($plato/calorias<300) then $plato/nombre else ()
+return $bajocal
 
 for $plato in doc("menu.xml")//plato/nombre
 group by $plato
@@ -61,7 +65,6 @@ return <plato>
 </plato>
 }
 </mesa>
-
 
 
 
