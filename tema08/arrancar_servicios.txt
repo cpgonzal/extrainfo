@@ -1,0 +1,54 @@
+Start Hadoop:
+
+# Starts the HDFS daemons, the namenode and datanodes.
+start-dfs.sh 
+
+
+# Starts the MapReduce (2.0) or YARN services
+start-yarn.sh
+
+# job history
+mr-jobhistory-daemon.sh start historyserver
+
+
+Stop Hadoop:
+
+# Stop the HDFS daemons, the namenode and datanodes.
+stop-dfs.sh 
+
+
+# Stop the MapReduce (2.0) or YARN services
+stop-yarn.sh
+
+# job history
+mr-jobhistory-daemon.sh stop historyserver
+
+
+
+
+# servicios activos de hadoop
+jps
+
+
+# Hadoop Web Interfaces:
+
+http://localhost:50070/ – web UI of NameNode 
+http://localhost:50090/ – web UI of SecondaryNameNode 
+http://localhost:8088/ – web UI of YARN Resource Manager
+http://localhost:19888/jobhistory - web UI of
+
+
+Hue:
+
+hue runserver
+
+http://localhost:8000
+
+Oozie:
+
+oozied.sh start
+oozie admin -oozie http://localhost:11000/oozie -status
+
+http://localhost:11000/oozie/
+
+
