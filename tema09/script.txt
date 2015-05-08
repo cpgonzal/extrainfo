@@ -1,0 +1,743 @@
+
+
+
+
+#cargar los datos utilizando read.table (en local)
+data.espacios.nat<-read.table(file="superficie_espacios_naturales.txt",header=T,sep=";")
+data.geo.municipios<-read.table(file="datos_geograficos_islas.txt",header=T,sep=";")
+
+
+
+#cargar los datos utilizando la función url() (en remoto, por https://)
+data.url<-"https://raw.githubusercontent.com/cpgonzal/cursoR/gh-pages/datos_del_curso_de_R/datos_geograficos_islas.txt"
+library(RCurl)
+data.geo.municipios<-read.table(textConnection(getURL(data.url,ssl.verifypeer = FALSE)),header=T,sep=";")
+
+
+
+
+
+# crear factores con etiquetas 
+data.geo.municipios$Isla   <- factor(data.geo.municipios$Isla,
+                                     levels=c("El Hierro", "La Palma", "La Gomera", "Tenerife", "Gran Canaria", "Fuerteventura", "Lanzarote")) 
+
+data.geo.municipios$Provincia<-c(rep("Las Palmas",34),rep("S/C. de Tenerife",54))
+
+
+# resumir datos from data frames
+data.geo.islas<-aggregate(data.geo.municipios[,c(3,5)], by=list(Provincia=data.geo.municipios$Provincia,Isla=data.geo.municipios$Isla), FUN=sum, na.rm=T)
+data.geo.islas$Altitud<-aggregate(data.geo.municipios[,6], by=list(Provincia=data.geo.municipios$Provincia,Isla=data.geo.municipios$Isla), FUN=max, na.rm=T)[,3]
+
+#estructura de los datos
+str(data.geo.islas)
+
+
+
+
+#funciones gráficas
+plot(data.geo.municipios$Superficie,data.geo.municipios$Perímetro.municipal)
+
+plot(Superficie~Perímetro.municipal,data=data.geo.municipios)
+
+plot(Superficie~1,data=data.geo.municipios,type="h")
+plot(Superficie~1,data=data.geo.municipios,type="s")
+
+plot(Superficie~Perímetro.municipal,data=data.geo.municipios,
+xlab="Perímetro del municipio (km)",
+ylab="Superficie (km. cuadrados)",
+main="Comparación del perímetro y la superficie de los municipios")
+
+
+
+#plot(1:25,1:25,pch=1:25)
+par.plot<-par(pch=20,col="blue",mfrow=c(2,1))
+plot(Superficie~Perímetro.municipal,data=data.geo.municipios)
+plot(Superficie~Altitud,data=data.geo.municipios)
+
+
+
+
+data.geo.municipios$Provincia<-as.factor(data.geo.municipios$Provincia)
+plot.colors<-c("green","orange")
+
+plot(Superficie~Perímetro.municipal,data=data.geo.municipios,col=plot.colors[data.geo.municipios$Provincia],pch=20)
+legend("topleft",legend=levels(data.geo.municipios$Provincia),col=c("green","orange"),pch=rep(20,2))
+
+
+
+
+#funciones gráficas avanzadas
+library(lattice)
+
+histogram( ~Superficie | Provincia, data=data.geo.municipios)
+
+densityplot( ~Superficie | Provincia, data=data.geo.municipios)
+
+bwplot(Superficie ~ Provincia, data=data.geo.municipios)
+
+xyplot(Superficie ~ Perímetro.municipal | Provincia, data=data.geo.municipios)
+
+
+
+#programas sencillos 
+myfunction <- function(x) {
+       resumen<- summary(x)       
+       return(resumen)
+     }
+
+myfunction(data.pob.municipios)
+
+
+data.pob.municipios[data.pob.municipios$CodMunicipio %in% c(38013,38048,38901) &
+                    data.pob.municipios$Indicador=='Cifras absolutas' & 
+                    data.pob.municipios$Anio=='2012',"Valor"]
+
+mystats <- function (x)
+ {
+ myinput <- x
+ mymean <- mean(x, na.rm=TRUE)
+ mysd <- sd(x, na.rm=TRUE)
+ return(list(data=myinput, media=mymean, desv.tipica=mysd))
+ }
+
+mystats(data.pob.municipios[data.pob.municipios$CodMunicipio %in% c(38013,38048,38901) &
+                             data.pob.municipios$Indicador=='Cifras absolutas' & 
+                             data.pob.municipios$Anio=='2012',"Valor"])
+
+
+
+
+
+
+
+#setwd("D:\\Docencia&Investigacion\\Asignaturas\\DatosR_Statistica_SPSS\\R_ggplot")
+setwd("C:\\RLibraries")
+load("dataCursoR.RData")
+
+#cargar la librería
+library(ggplot2)
+
+
+#un gráfico sencillo
+qplot(data=data.geo.islas,x=Superficie,main="Histograma de superficie")
+qplot(data=data.geo.islas,x=Superficie,main="Histograma de superficie",binwidth=10000)
+
+
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, main="Gráfico de superficie vs. altitud")
+
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, main="Gráfico de superficie vs. altitud", 
+xlab="Superficie", ylab="Altitud")
+
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, main="Gráfico de superficie vs. altitud", 
+xlab="Superficie", ylab="Altitud",
+xlim=c(0,2500),ylim=c(0,1500))
+
+
+#color, tamaño, forma (aspectos estéticos)
+
+# la vida en color
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, colour = Isla,
+main="Gráfico de superficie vs. altitud", 
+xlab="Superficie", ylab="Altitud") 
+
+
+# el tamaño sí importa
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, size = Isla,
+main="Gráfico de superficie vs. altitud", 
+xlab="Superficie", ylab="Altitud") 
+
+
+# dando forma a los puntos
+qplot(data=data.geo.islas,x=Superficie,y=Altitud, shape = Isla,
+main="Gráfico de superficie vs. altitud", 
+xlab="Superficie", ylab="Altitud") 
+
+
+
+# objetos geométricos
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = "point")
+
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = "boxplot", colour = Isla)    # cuidado con el tipo de variables en gráficos
+qplot(data=data.geo.municipios,x=Isla,y=Altitud, geom = "boxplot")
+
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = "smooth", method="loess")
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = c("point", "smooth"), method="lm")
+
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = "path")
+qplot(data=data.geo.municipios,x=Superficie,y=Altitud, geom = "line")
+
+#qplot(data=data.geo[data.geo$Isla %in% c("Tenerife","Gran Canaria"),],x=Superficie,y=Altitud, geom = "line", colour = Isla)
+
+
+NOTA: data.geo.municipios[is.na(data.geo.municipios)]<-0
+
+
+
+
+# otros argumentos para geom
+qplot(data=data.espacios.nat, x=Superficie, geom = "histogram")
+qplot(data=data.espacios.nat, x=Superficie, geom = "density")
+
+qplot(data=data.espacios.nat, x=Superficie, geom = "density", colour = Isla)   # las densidades son superpuestas
+qplot(data=data.espacios.nat, x=Superficie, geom = "histogram", colour = Isla) # los histogramas son apilados y se colorea el borde
+qplot(data=data.espacios.nat, x=Superficie, geom = "histogram", fill = Isla)   # los histogramas son apilados y se colorea el interior
+
+
+qplot(data=data.espacios.nat, x=Espacio.natural, geom = "bar", fill = Isla) # también los gráficos de barras son apilados
+qplot(data=data.espacios.nat, x=Espacio.natural, geom = "bar", fill = Isla, position="dodge") 
+qplot(data=data.espacios.nat, x=Espacio.natural, geom = "bar", stat="identity", fill = Isla, position="dodge") 
+
+
+
+
+qplot(data=data.geo.municipios, x=Provincia, geom = "bar")
+qplot(data=data.geo.municipios, x=Provincia, geom = "bar", fill = Isla)
+
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram")
+qplot(data=data.geo.municipios, x=Superficie, geom = "density")
+
+qplot(data=data.geo.municipios, x=Superficie, geom = "density", colour = Provincia)   # las densidades son superpuestas
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", colour = Provincia) # los histogramas son apilados y se colorea el borde
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", fill = Provincia)   # los histogramas son apilados y se colorea el interior
+
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", fill = Provincia, position="dodge") # las barras se pueden representar sin apilar
+
+
+
+
+
+# Comprensión de la gramática de capas
+ejemplo1<-qplot(data=data.geo.municipios,x=Superficie,y=Altitud, colour = Isla)
+
+ejemplo1<-ggplot(data=data.geo.municipios, mapping=aes(x=Superficie,y=Altitud, colour=Isla))
+  
+ejemplo1 + layer(geom="point")  # ejemplo1 + geom_point()  
+
+ejemplo1 + layer(geom="point", stat="identity" ) # ejemplo1 + geom_point(stat="identity")  # ejemplo1 + geom_point()    
+
+
+ejemplo1<-ggplot(data=data.geo.municipios, mapping=aes(x=Superficie,y=Altitud, colour=Isla))
+ejemplo1 + geom_point(mapping=aes(shape=Provincia) ) + scale_shape(solid = FALSE)
+
+
+ejemplo1<-ggplot(data=data.geo.municipios, mapping=aes(x=Superficie,y=Altitud, colour=Isla))
+ejemplo1 + geom_point(mapping=aes(size=Provincia) ) + scale_size_discrete(range = c(2, 4) )
+
+
+ejemplo1 + geom_point() + coord_polar()
+ejemplo1 + geom_point() + facet_grid(. ~ Provincia)
+
+
+
+
+
+
+ejemplo2<-qplot(data=data.geo.municipios,x=Provincia, geom = "bar", fill = Isla)
+ejemplo2<-ggplot(data=data.geo.municipios, mapping=aes(x=Provincia, fill=Isla))
+ejemplo2 + layer(geom="bar")    # o tambien: ejemplo2 + geom_bar() 
+ejemplo2 + layer(geom="bar", stat="bin" )  # ejemplo2 + geom_bar(stat="bin")         # ejemplo2 + geom_bar()
+ejemplo2 + layer(geom="bar", stat="bin", position="dodge")   # o tambien:  ejemplo2 + geom_bar(position=position_dodge() ) 
+
+
+
+
+
+# gráficos de desnidad e histograma
+
+qplot(data=data.espacios.nat, x=Superficie, geom = "density", colour = Isla)   
+# las densidades son superpuestas
+ggplot(data=data.espacios.nat, mapping=aes(x=Superficie,colour=Isla)) +geom_density()
+
+
+
+qplot(data=data.espacios.nat, x=Superficie, geom = "histogram", colour = Isla) 
+# los histogramas son apilados y se colorea el borde
+ggplot(data=data.espacios.nat, mapping=aes(x=Superficie,colour=Isla)) +geom_histogram()
+
+
+
+qplot(data=data.espacios.nat, x=Superficie, geom = "histogram", fill = Isla)   
+# los histogramas son apilados y se colorea el interior
+ggplot(data=data.espacios.nat, mapping=aes(x=Superficie,fill=Isla)) +geom_histogram()
+
+
+
+qplot(data=data.espacios.nat, x=Espacio.natural, geom = "bar", fill = Isla) 
+# también los gráficos de barras son apilados
+ggplot(data=data.espacios.nat, mapping=aes(x=Espacio.natural,fill=Isla)) +geom_bar(position=position_dodge() )
+
+
+
+qplot(data=data.espacios.nat, x=Espacio.natural, geom = "bar", fill = Isla, position="dodge") 
+# barras colocadas unas al lado de otras
+ggplot(data=data.espacios.nat, mapping=aes(x=Espacio.natural,fill=Isla)) +geom_bar()
+
+
+
+qplot(data=data.geo.municipios, x=Provincia, geom = "bar")
+ggplot(data=data.geo.municipios, mapping=aes(x=Provincia)) +geom_bar()
+
+
+qplot(data=data.geo.municipios, x=Provincia, geom = "bar", fill = Isla)
+ggplot(data=data.geo.municipios, mapping=aes(x=Provincia,fill = Isla)) +geom_bar()
+
+
+
+
+
+
+
+
+
+# Otros gráficos: histogramas y densidad
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram")
+ggplot(data=data.geo.municipios, mapping=aes(x=Superficie)) + geom_histogram()
+
+
+#ggplot(data=data.geo.municipios, mapping=aes(x=Superficie)) +
+#      geom_histogram(binwidth=30) +
+#      geom_density(mapping=aes(y=30*..count..),colour="red", adjust=4) 
+
+
+qplot(data=data.geo.municipios, x=Superficie, geom = "density")
+ggplot(data=data.geo.municipios, mapping=aes(x=Superficie)) +geom_density()
+
+       
+qplot(data=data.geo.municipios, x=Superficie, geom = "density", colour = Provincia)   # las densidades son superpuestas
+ggplot(data=data.geo.municipios, mapping=aes(x=Superficie, colour = Provincia)) +geom_density()
+
+
+
+
+# Varias maneras de representar gráficos histogramas
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", colour = Provincia)  
+# los histogramas son apilados y se colorea el borde       
+       
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", fill = Provincia)  
+# los histogramas son apilados y se colorea el interior
+
+qplot(data=data.geo.municipios, x=Superficie, geom = "histogram", fill = Provincia, position="dodge")  
+# las barras se pueden representar sin apilar
+       
+
+
+
+
+
+
+
+
+
+
+
+#cargar la librería
+# http://code.google.com/p/google-motion-charts-with-r/
+library(googleVis)
+
+data.pob.municipios
+#data.pob.municipios$Anio<-as.numeric(data.pob.municipios$Anio)
+
+#data.pob.municipios2<-data.pob.municipios[data.pob.municipios$CodMunicipio %in% c("ES70","ES703","ES704","ES705","ES706","ES707","ES708","ES709"),]
+#
+
+
+data.pob.capitales<-data.pob.municipios[data.pob.municipios$Indicador=="Cifras absolutas" &
+                                          data.pob.municipios$CodMunicipio %in% c("ES705","ES709"),]
+
+
+motion.capitales=gvisMotionChart(data.pob.capitales, idvar="Municipio", timevar="Anio", options=list(height=350, width=400))
+# Display chart
+plot(motion.capitales) 
+
+
+# create gagdet
+cat(createGoogleGadget(motion.capitales), file="motionchart.xml")
+# se sube el gadget a algún repositorio y se vincula en alguna página
+# https://sites.google.com/site/cpgonzal/
+
+
+
+
+
+data.pob.lgom<-data.pob.municipios[data.pob.municipios$Indicador=="Cifras absolutas" &
+                                          data.pob.municipios$CodMunicipio %in% c("38002","38003","38021","38036","38049","38050"),]
+motion.lgom=gvisMotionChart(data.pob.lgom, idvar="Municipio", timevar="Anio", options=list(height=350, width=400))
+plot(motion.lgom)
+
+
+
+
+
+
+
+data.coords<-read.table("datos_coordenadas_canarias.txt",header=TRUE,sep=",")
+idx <- match(data.pob.capitales$CodMunicipio,data.coords$cod)
+data.pob.capitales$LatLong<-paste(data.coords[idx,"latitude"],data.coords[idx,"longitude"],sep=":")
+
+#data.pob.capitales<-merge(data.pob.capitales,data.coords,by.x="CodMunicipio",by.y="cod")
+
+
+#data.pob.capitales$ValorM<-data.pob.capitales[,"Valor"]/10000
+
+map.capitales<-gvisGeoMap(data.pob.capitales[data.pob.capitales$Anio=='2012',], locationvar="LatLong", numvar="Valor",
+                       options=list(region="ES", dataMode='markers',showLegend=FALSE))
+# Display chart
+plot(map.capitales) 
+
+
+#map.capitales<-gvisGeoMap(data2, locationvar="LatLong", numvar="ValorM2",
+#                       options=list(region="ES", dataMode='markers',showLegend=FALSE))
+
+
+data.pob.capitales$Tip<-paste("Poblacion:",data.pob.capitales$Valor)
+
+map.capitales<-gvisMap(data.pob.capitales[data.pob.capitales$Anio=='2012',], "LatLong", "Tip",
+                       options=list(enableScrollWheel=TRUE,  mapType='terrain', useMapTypeControl=TRUE))
+# Display chart
+plot(map.capitales) 
+
+
+
+#data.pob.capitales[order(data.pob.capitales[,4]),c(4,2,7)]
+
+table.capitales <- gvisTable(data.pob.capitales, options=list(width=800, height=470))
+# Display chart
+plot(table.capitales) 
+
+
+table.capitales <- gvisTable(data.pob.capitales, options=list(width=800, height=470,page='enable'))
+# Display chart
+plot(table.capitales) 
+
+
+
+data.pob.capitales$Date<-as.Date(paste(data.pob.capitales$Anio,"-01-01",sep=""))
+
+
+line.capitales  <- gvisAnnotatedTimeLine(data.pob.capitales, datevar="Date",
+                           numvar="Valor", idvar="Municipio",    
+                           date.format = "%d/%m/%Y",
+                           options=list(legendPosition='newRow',displayExactValues="TRUE",
+                             width=600, height=550)
+                           )
+# Display chart
+plot(line.capitales) 
+
+
+
+
+
+data.pob.capitales2<-data.frame(Anio=data.pob.capitales[data.pob.capitales$Municipio==" TENERIFE","Anio"],
+                                TENERIFE=data.pob.capitales[data.pob.capitales$Municipio==" TENERIFE","Valor"],
+				GRAN_CANARIA=data.pob.capitales[data.pob.capitales$Municipio==" GRAN CANARIA","Valor"])
+
+
+## Line chart
+line.capitales <- gvisLineChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                                options=list(legend='right', width=600, height=400))
+plot(line.capitales)
+
+
+line.capitales <- gvisLineChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                                options=list(
+                                            title="Poblacion en TF y GC", 
+                                            fontName="Arial",                          
+                                            titleTextStyle="{color:'red',fontSize:16}",      
+hAxis="{title:'Anio', titleTextStyle:{color:'blue'}}",                           
+series="[{color:'green', targetAxisIndex: 0}, {color: 'orange',targetAxisIndex:1}]",                           
+vAxes="[{title:'TENERIFE',fontName: 'Times'}, {title:'GRAN_CANARIA'}]", 
+width=600, 
+height=400))
+
+
+plot(line.capitales)
+
+
+## Bar chart
+bar.capitales <- gvisBarChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                              options=list(legend='right', width=600, height=400))
+plot(bar.capitales)
+
+
+data.geo.lpalma<-data.geo.municipios[data.geo.municipios$Isla=="La Palma",]
+bar.lpalma <- gvisBarChart(data.geo.lpalma,xvar="Municipio",yvar=c("Superficie"),
+                              options=list(legend='right', width=600, height=400))
+plot(bar.lpalma)
+
+
+## Column chart
+col.capitales <- gvisColumnChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                              options=list(legend='right', width=600, height=400))
+plot(col.capitales)
+
+
+
+col.lpalma <- gvisColumnChart(data.geo.lpalma,xvar="Municipio",yvar=c("Superficie","Perímetro.municipal"),
+                              options=list(legend='right', width=800, height=400,
+                                           hAxis="{slantedText:true,slantedTextAngle:60}"))
+plot(col.lpalma)
+
+
+
+## Area chart
+area.capitales <- gvisAreaChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                              options=list(legend='right', width=600, height=400))
+plot(area.capitales)
+
+
+
+## Stepped Area Chart
+data.pob.capitales2$Anio<-as.character(data.pob.capitales2$Anio)
+data.pob.capitales2<-data.pob.capitales2[order(data.pob.capitales2$Anio),]
+
+
+step.capitales <- gvisSteppedAreaChart(data.pob.capitales2,xvar="Anio",yvar=c("TENERIFE","GRAN_CANARIA"),
+                                       options=list(isStacked=TRUE,  width=600, height=400))
+plot(step.capitales)
+
+
+
+step.lpalma <- gvisSteppedAreaChart(data.geo.lpalma,xvar="Municipio",yvar=c("Superficie"),
+                              options=list(legend='right', width=800, height=400,
+                                           hAxis="{slantedText:true,slantedTextAngle:60}"))
+plot(step.lpalma)
+
+
+
+
+## composite
+composite.lpalma <- gvisMerge(gvisMerge(bar.lpalma,col.lpalma, horizontal=FALSE), 
+                               step.lpalma, 
+                              horizontal=TRUE, tableOptions="cellspacing=5")
+plot(composite.lpalma)
+
+
+
+
+
+
+
+data.pob.canarias<-data.pob.municipios[data.pob.municipios$Indicador %in% c("Cifras absolutas","Variación interanual") &
+                                          data.pob.municipios$CodMunicipio %in% c("ES70"),]
+
+data.pob.canarias2<-data.frame(CIFRAS_ABSOLUTAS=data.pob.canarias[data.pob.canarias$Indicador=="Cifras absolutas","Valor"],
+				VAR_INTERANUAL=data.pob.canarias[data.pob.canarias$Indicador=="Variación interanual","Valor"])
+
+## Scatter chart
+scatter.canarias <- gvisScatterChart(data.pob.canarias2, 
+                                     options=list(legend="none",
+                                                  lineWidth=2, pointSize=0, 
+                                                  vAxis="{title:'Variacion interanual'}",
+                                                  hAxis="{title:'Poblacion absoluta'}", 
+                                                  title="Comparacion de poblacion absoluta y var. inter.",                                                   
+                                                  width=600, height=600))
+plot(scatter.canarias)
+
+
+
+data.geo.lpalma2<-data.geo.lpalma[,c("Superficie","Altitud")]
+scatter.lpalma <- gvisScatterChart(data.geo.lpalma2, 
+                                     options=list(legend="none",
+                                                  lineWidth=0, pointSize=2, 
+                                                  vAxis="{title:'Altitud'}",
+                                                  hAxis="{title:'Superficie'}",
+                                                  width=600, height=600))
+plot(scatter.lpalma)
+
+
+
+
+
+
+
+data.pob.canarias2<-data.frame(CIFRAS_ABSOLUTAS=data.pob.canarias[data.pob.canarias$Indicador=="Cifras absolutas","Valor"],
+				VAR_INTERANUAL=data.pob.canarias[data.pob.canarias$Indicador=="Variación interanual","Valor"],
+                                ANIO=data.pob.canarias[data.pob.canarias$Indicador=="Variación interanual","Anio"])
+
+## Bubble chart
+bubble.canarias <- gvisBubbleChart(data.pob.canarias2, idvar="ANIO", xvar="CIFRAS_ABSOLUTAS", yvar="VAR_INTERANUAL",                                                
+                           options=list( width=600, height=600))
+
+plot(bubble.canarias)
+
+
+
+
+data.pob.capitales<-data.pob.municipios[data.pob.municipios$Indicador %in% c("Cifras absolutas","Variación interanual") &
+                                          data.pob.municipios$CodMunicipio %in% c("ES705","ES709") &
+                                          data.pob.municipios$Anio %in% c("2010","2011","2012"),]
+
+data.pob.capitales2<-data.frame(CIFRAS_ABSOLUTAS=data.pob.capitales[data.pob.capitales$Indicador=="Cifras absolutas","Valor"],
+				VAR_INTERANUAL=data.pob.capitales[data.pob.capitales$Indicador=="Variación interanual","Valor"],
+                                ANIO=data.pob.capitales[data.pob.capitales$Indicador=="Variación interanual","Anio"],
+                                ISLA=data.pob.capitales[data.pob.capitales$Indicador=="Variación interanual","Municipio"])
+
+
+bubble.canarias <- gvisBubbleChart(data.pob.capitales2, idvar="ISLA", xvar="CIFRAS_ABSOLUTAS", yvar="VAR_INTERANUAL", 
+                           colorvar="ANIO", sizevar="VAR_INTERANUAL",                         
+                           options=list( width=600, height=600))
+
+plot(bubble.canarias)
+
+
+
+
+
+bubble.lpalma <- gvisBubbleChart(data.geo.lpalma, idvar="Isla", colorvar="Municipio", 
+                                 xvar="Superficie", yvar="Altitud",  sizevar="Perímetro.municipal",                                              
+                                 options=list( width=600, height=600, bubble="{textStyle:{color: 'none'}}"))
+
+plot(bubble.lpalma)
+
+
+
+
+
+
+
+
+data.pob.canarias<-data.pob.municipios[data.pob.municipios$Indicador %in% c("Cifras absolutas") &
+                                          data.pob.municipios$CodMunicipio %in% c("ES70") &
+                                          data.pob.municipios$Anio %in% c("2010","2011","2012"),]
+
+data.pob.canarias2<-data.frame(ANIO=as.character(data.pob.canarias[,"Anio"]),
+                               CIFRAS_ABSOLUTAS=data.pob.canarias[,"Valor"])
+
+## Pie chart
+pie.canarias <- gvisPieChart(data.pob.canarias2,labelvar = "ANIO", numvar = "CIFRAS_ABSOLUTAS", 
+                                       options=list(width=600, height=400))
+plot(pie.canarias)
+
+
+
+
+data.geo.lpalma2<-data.geo.lpalma[,c("Municipio","Superficie")]
+
+pie.lpalma <- gvisPieChart(data.geo.lpalma2,labelvar = "Municipio", numvar = "Superficie", 
+                                       options=list(width=600, height=400))
+plot(pie.lpalma)
+
+
+
+## Gauge
+gauge.canarias <-  gvisGauge(data.pob.canarias2, options=list(
+                                      fontSize=9,
+                                      min=2000000, max=2200000, 
+                                      redFrom=2000000, redTo=2100000,
+                                      yellowFrom=2100000, yellowTo=2150000,
+                                      greenFrom=2150000, greenTo=2200000, 
+                                      width=800, height=320))
+plot(gauge.canarias)
+
+
+
+data.org.canarias<-data.frame(ISLA=c("CANARIAS", "LANZAROTE", "FUERTEVENTURA", "GRAN CANARIA", "TENERIFE",     
+                                     "LA GOMERA", "LA PALMA", "EL HIERRO"),
+                              PARENT=c(NA, "GRAN CANARIA", "GRAN CANARIA", "CANARIAS", "CANARIAS", "TENERIFE", 
+                                     "TENERIFE", "TENERIFE"),
+                              CODE=c("ES70","ES708","ES704","ES705","ES709","ES706","ES707","ES703") )
+
+
+## Org chart
+org.canarias <- gvisOrgChart(data.org.canarias, idvar = "ISLA", parentvar = "PARENT", tipvar="CODE", 
+                               options=list(width=600, height=210,
+                               size='large', allowCollapse=TRUE))
+plot(org.canarias)
+
+
+
+
+
+
+
+org.canarias <- gvisOrgChart(data.org.canarias, idvar = "ISLA", parentvar = "PARENT", tipvar="CODE", 
+                               options=list(width=200, height=50,
+                               size='small', allowCollapse=TRUE))
+
+plot(org.canarias)
+
+
+
+
+
+
+
+
+load("dataCursoR.RData")
+library(maptools)
+#readShapeLines
+canary.counties<-readShapeLines(fn="ISTAC_comarcas27_R.shp")
+plot(canary.counties, axes=TRUE, col="red")
+
+
+#readShapePoly
+canary.counties<-readShapePoly(fn="ISTAC_comarcas27_R.shp")
+plot(canary.counties, axes=TRUE, col="red")
+
+
+
+canary.counties
+summary(canary.counties)
+
+slotNames(canary.counties)
+canary.counties@data
+canary.counties@polygons[[1]]
+
+plot(canary.counties, axes=TRUE)
+
+
+#escalas de longitud y latitud
+print(proj4string(canary.counties))
+proj4string(canary.counties) <- "+proj=longlat +datum=WGS84"
+print(proj4string(canary.counties))
+plot(canary.counties, axes=TRUE)
+
+
+#creamos una variable con pobl. censal 2001 de hombres
+censal.hombres<-data.comarcas.censal[data.comarcas.censal$sexo=="men",]
+canary.tmp<-merge(canary.counties@data,censal.hombres,by.x="CODCOM",by.y="comarca",sort=FALSE)
+canary.counties@data$sexoH<-canary.tmp$sexo
+canary.counties@data$censoH<-canary.tmp$censo
+
+
+
+#creamos una variable con pobl. censal 2001 de mujeres
+censal.mujeres<-data.comarcas.censal[data.comarcas.censal$sexo=="women",]
+idx<-match(canary.counties@data$CODCOM,censal.mujeres$comarca)
+canary.counties@data$sexoM<-censal.mujeres$sexo[idx]
+canary.counties@data$censoM<-censal.mujeres$censo[idx]
+
+
+
+
+
+
+
+
+
+library(classInt)
+library(RColorBrewer) 
+
+n=7  
+
+#obtener una paleta de 7 colores
+pal <- brewer.pal(n, 'Blues')
+#obtener intervalos de clase para 7 colores
+int <- classIntervals(canary.counties@data$censoH, n, style='jenks')  
+
+  
+p <- spplot(canary.counties["censoH"], col.regions=pal, at=signif(int$brks, digits=2), lwd=.4, col="black")
+p
+
+# corrección del primer color de la escala
+int$brks[1]<-1000
+# comprobar el orden de representación
+canary.counties@data[ order(canary.counties@data$censoH),]
+
+
+
+
+
+
+
+
