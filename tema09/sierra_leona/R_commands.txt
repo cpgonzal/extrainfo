@@ -1,0 +1,6 @@
+setwd("D:\\Docencia&Investigacion\\Asignaturas\\DatosR_Statistica_SPSS\\R_epidemi\\sierra_leone")
+library(maptools)
+sierra.leone<-readShapeLines("SIL.shp")
+
+
+guinea<-readShapeLines("GIN.shp")
