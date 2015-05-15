@@ -1,0 +1,13 @@
+HighCarths enlaces:
+
+http://highcarts.com
+http://builtvisible.com/highcharts-generator/
+
+
+D3.js enlaces:
+
+http://vida.io/
+http://d3-generator.com/
+http://raw.densitydesign.org/ 
+
+
