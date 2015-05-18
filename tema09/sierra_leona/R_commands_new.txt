@@ -1,0 +1,27 @@
+library(maptools)
+sierra.leone<-readShapeLines("SIL.shp")
+plot(sierra.leone)
+
+View(sierra.leone@data)
+
+ebola<-ebola[,c(1:5)]
+ebola$Month<-substr(ebola$Date,4,5)
+ebola$Year<-substr(ebola$Date,7,10)
+
+
+library(plyr)
+
+
+ebola.group<-ddply(ebola,c("Country","Localite","Category","Month"),
+                         summarize, Total=sum(Value))
+ebola.group$Total[is.na(ebola.group$Total)]<-0
+ebola.group$Total<-as.integer(ebola.group$Total)
+
+ebola.group2<-ebola.group[ebola.group$Month=="08",]
+
+
+ebola.tmp1<-ebola[ebola$Localite=="Bo" & ebola$Month=="09",]
+ebola.group.tmp1<-ddply(ebola.tmp1,c("Country","Localite","Category","Month"),
+                   summarize, Total=sum(Value))
+
+sum(ebola.tmp1$Value)
