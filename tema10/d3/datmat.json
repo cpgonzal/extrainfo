@@ -1,0 +1,26 @@
+{
+ "name": "matricula 2010-11",
+ "children": [
+  {
+   "name": "2009-10",
+   "children": [
+    {"name": "2009-10 Hombre", "size": 9355},
+    {"name": "2009-10 Mujer", "size": 12638}
+    ]
+  },
+  {
+   "name": "2010-11",
+   "children": [
+    {"name": "2010-11 Hombre", "size": 9587},
+    {"name": "2010-11 Mujer", "size": 12788}
+    ]
+  },
+  {
+   "name": "2011-11",
+   "children": [
+    {"name": "2010-11 Hombre", "size": 9660},
+    {"name": "2010-11 Mujer", "size": 12831}
+    ]  
+  }
+ ]
+}

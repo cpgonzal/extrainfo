@@ -1,0 +1,59 @@
+
+
+<html>
+
+<head>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+google.load('visualization', '1', {packages: ['corechart', 'bar']});
+google.setOnLoadCallback(drawAnnotations);
+
+function drawAnnotations() {
+      var data = google.visualization.arrayToDataTable([
+        ['Curso', 'Hombres', 'Mujeres'],
+        ['2008-09', 9229, 12703],
+        ['2009-10', 9335, 12638],
+        ['2010-11', 9587, 12788],
+        ['2011-12', 9660, 12831]
+      ]);
+      
+      var options = {
+        title: 'Matrícula ULL',
+        chartArea: {width: '50%'},
+        annotations: {
+          alwaysOutside: true,
+          textStyle: {
+            fontSize: 12,
+            auraColor: 'none',
+            color: '#555'
+          },
+          boxStyle: {
+            stroke: '#ccc',
+            strokeWidth: 1,
+            gradient: {
+              color1: '#f3e5f5',
+              color2: '#f3e5f5',
+              x1: '0%', y1: '0%',
+              x2: '100%', y2: '100%'
+            }
+          }
+        },
+        hAxis: {
+          title: 'Matrícula total',
+          minValue: 0,
+        },
+        vAxis: {
+          title: 'Curso'
+        }
+      };
+      var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+</script>
+</head>
+
+<body>
+  <div id="chart_div"></div>
+</body>
+
+</html>
